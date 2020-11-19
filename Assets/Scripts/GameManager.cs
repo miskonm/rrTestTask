@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour
     {
         cardsDataContainer = new CardsDataContainer();
         cardValueModificator.Setup(cardsDataContainer);
-        cardMover.Setup(cardsHand);
+        cardMover.Setup(cardsHand, cardsDataContainer);
 
         SetActiveLoader(true);
         SetActiveDamageButton(false);

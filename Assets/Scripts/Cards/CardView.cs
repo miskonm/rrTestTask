@@ -81,6 +81,7 @@ public class CardView : MonoBehaviour, IPointerDownHandler
     #region Properties
 
     public int Index { get; private set; }
+    public CardData CardData { get; private set; }
 
     #endregion
 
@@ -104,6 +105,8 @@ public class CardView : MonoBehaviour, IPointerDownHandler
 
     public void Setup(CardData cardData)
     {
+        CardData = cardData;
+        
         cardData.OnManaChanged(ChangeManaValue).OnHpChanged(ChangeHpValue).OnAtkChanged(ChangeAtkValue);
 
         mainIcon.sprite = cardData.Sprite;

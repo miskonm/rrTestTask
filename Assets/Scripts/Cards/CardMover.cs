@@ -7,6 +7,7 @@ public class CardMover : MonoBehaviour
     #region Variables
 
     private CardsHand cardsHand;
+    private CardsDataContainer cardsDataContainer;
     private Camera cachedCamera;
 
     private CardView cardUnderCursor;
@@ -53,6 +54,7 @@ public class CardMover : MonoBehaviour
                 if (IsUnderDropZone(out var dropZone))
                 {
                     cardUnderCursor.transform.parent = dropZone.transform;
+                    cardsDataContainer.Remove(cardUnderCursor.CardData);
                     cardUnderCursor.KillCard();
                 }
                 else
@@ -71,9 +73,10 @@ public class CardMover : MonoBehaviour
 
     #region Public methods
 
-    public void Setup(CardsHand cardsHand)
+    public void Setup(CardsHand cardsHand,CardsDataContainer cardsDataContainer)
     {
         this.cardsHand = cardsHand;
+        this.cardsDataContainer = cardsDataContainer;
     }
 
     #endregion

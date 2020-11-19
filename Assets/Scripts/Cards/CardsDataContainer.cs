@@ -16,5 +16,10 @@ public class CardsDataContainer
         Cards = cards;
     }
 
+    public void Remove(CardData cardData)
+    {
+        Cards.Remove(cardData);
+    }
+
     #endregion
 }
