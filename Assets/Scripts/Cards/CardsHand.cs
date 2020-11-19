@@ -49,15 +49,17 @@ public class CardsHand : MonoBehaviour
 
     #region Public methods
 
-    public void CreateCards(List<CardData> cards)
+    public List<CardView> CreateCards(List<CardData> cards)
     {
         if (cards == null)
         {
-            return;
+            return null;
         }
 
         InstantiateCards(cards);
         StartCoroutine(PlaceAndRotateAfterDelay());
+
+        return this.cards;
     }
 
     public void PlaceAndRotate()

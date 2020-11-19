@@ -16,5 +16,5 @@ MonoBehaviour:
   cardDescription: "\u041D\u0435 \u043C\u0435\u043D\u0435\u0435 \u0437\u043D\u0430\u043C\u0435\u043D\u0438\u0442\u044B\u0439
     \u0432\u0442\u043E\u0440\u043E\u0439"
   cardMana: 5
-  cardHp: 2
+  cardHp: 1
   cardAtk: 9

@@ -149,7 +149,7 @@ MonoBehaviour:
   inAnimationTime: 0.4
   outAnimationTime: 0.25
   movingAnimationTime: 1.2
-  button: {fileID: 3429143254284853801}
+  killAnimationTime: 1
   shineCanvasGroup: {fileID: 6290867161901388503}
 --- !u!223 &7157156374869917479
 Canvas:

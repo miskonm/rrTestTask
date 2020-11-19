@@ -57,6 +57,9 @@ public class CardView : MonoBehaviour, IPointerDownHandler
     [SerializeField]
     private float movingAnimationTime;
 
+    [SerializeField]
+    private float killAnimationTime;
+
     [Header("Shine")]
     [SerializeField]
     private CanvasGroup shineCanvasGroup;
@@ -106,8 +109,9 @@ public class CardView : MonoBehaviour, IPointerDownHandler
     public void Setup(CardData cardData)
     {
         CardData = cardData;
-        
-        cardData.OnManaChanged(ChangeManaValue).OnHpChanged(ChangeHpValue).OnAtkChanged(ChangeAtkValue);
+
+        cardData.OnManaChanged(ChangeManaValue).OnHpChanged(ChangeHpValue).OnAtkChanged(ChangeAtkValue)
+               .OnKilled(KillCard);
 
         mainIcon.sprite = cardData.Sprite;
 
@@ -162,7 +166,7 @@ public class CardView : MonoBehaviour, IPointerDownHandler
         rotateTweener = cachedRectTransform.DORotate(eulerAngle, movingAnimationTime);
     }
 
-    public void KillCard()
+    public void DeactivateCard()
     {
         isCardAlive = false;
     }
@@ -172,22 +176,34 @@ public class CardView : MonoBehaviour, IPointerDownHandler
 
     #region Private methods
 
-    private void ChangeManaValue(int mana)
+    private void ChangeManaValue(CardData cardData, int mana)
     {
         manaTextLabel.text = mana.ToString();
         Animate(manaRectTransform, manaTextLabel);
     }
 
-    private void ChangeHpValue(int hp)
+    private void ChangeHpValue(CardData cardData, int hp)
     {
+        if (hp <= 0)
+        {
+            return;
+        }
+
         hpTextLabel.text = hp.ToString();
         Animate(hpRectTransform, hpTextLabel);
     }
 
-    private void ChangeAtkValue(int atk)
+    private void ChangeAtkValue(CardData cardData, int atk)
     {
         atkTextLabel.text = atk.ToString();
         Animate(atkRectTransform, atkTextLabel);
+    }
+
+    private void KillCard(CardData cardData)
+    {
+        DeactivateCard();
+
+        cachedRectTransform.DOScale(0f, killAnimationTime).OnComplete(() => Destroy(gameObject));
     }
 
     private void Animate(RectTransform rectTransform, TextMeshProUGUI textLabel)

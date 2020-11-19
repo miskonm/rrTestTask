@@ -46,13 +46,12 @@ public class CardValueModificator : MonoBehaviour
     private IEnumerator ModifyCards(Action completeCallback)
     {
         var cardsToModifyCount = Random.Range(minCardsNumber, maxCardsNumber + 1);
-        var cards = cardsDataContainer.Cards;
         var cardIndex = 0;
 
         for (int i = 0; i < cardsToModifyCount; i++)
         {
             cardIndex = GetValidIndex(cardIndex);
-            ModifyCardData(cards[cardIndex]);
+            ModifyCardData(cardsDataContainer.Cards[cardIndex]);
             
             yield return new WaitForSeconds(1f);
 

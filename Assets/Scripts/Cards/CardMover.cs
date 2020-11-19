@@ -55,7 +55,7 @@ public class CardMover : MonoBehaviour
                 {
                     cardUnderCursor.transform.parent = dropZone.transform;
                     cardsDataContainer.Remove(cardUnderCursor.CardData);
-                    cardUnderCursor.KillCard();
+                    cardUnderCursor.DeactivateCard();
                 }
                 else
                 {

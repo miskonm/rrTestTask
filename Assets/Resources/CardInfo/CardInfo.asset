@@ -15,5 +15,5 @@ MonoBehaviour:
   cardName: "\u0424\u0430\u0439\u043D"
   cardDescription: "\u0428\u0430\u0439\u043D"
   cardMana: 1
-  cardHp: 2
+  cardHp: 1
   cardAtk: 3

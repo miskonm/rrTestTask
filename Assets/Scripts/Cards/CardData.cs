@@ -8,10 +8,11 @@ public class CardData
     private int mana;
     private int hp;
     private int atk;
-    
-    private  Action<int> onManaChanged;
-    private  Action<int> onHpChanged;
-    private  Action<int> onAtkChanged;
+
+    private Action<CardData, int> onManaChanged;
+    private Action<CardData, int> onHpChanged;
+    private Action<CardData, int> onAtkChanged;
+    private Action<CardData> onKilled;
 
     #endregion
 
@@ -20,12 +21,12 @@ public class CardData
 
     public string Name { get; }
     public string Description { get; }
-    
+
     public Sprite Sprite { get; }
 
     public int Mana
     {
-        get => mana; 
+        get => mana;
         set
         {
             if (mana == value)
@@ -35,7 +36,7 @@ public class CardData
 
             mana = value;
 
-            onManaChanged?.Invoke(mana);
+            onManaChanged?.Invoke(this, mana);
         }
     }
 
@@ -51,7 +52,7 @@ public class CardData
 
             hp = value;
 
-            onHpChanged?.Invoke(hp);
+            onHpChanged?.Invoke(this, hp);
         }
     }
 
@@ -67,7 +68,7 @@ public class CardData
 
             atk = value;
 
-            onAtkChanged?.Invoke(atk);
+            onAtkChanged?.Invoke(this, atk);
         }
     }
 
@@ -92,25 +93,37 @@ public class CardData
 
     #region Public methods
 
-    public CardData OnManaChanged(Action<int> callback)
+    public CardData OnManaChanged(Action<CardData, int> callback)
     {
         onManaChanged += callback;
-        
+
         return this;
     }
-    
-    public CardData OnHpChanged(Action<int> callback)
+
+    public CardData OnHpChanged(Action<CardData, int> callback)
     {
         onHpChanged += callback;
-        
+
         return this;
     }
-    
-    public CardData OnAtkChanged(Action<int> callback)
+
+    public CardData OnAtkChanged(Action<CardData, int> callback)
     {
         onAtkChanged += callback;
-        
+
         return this;
+    }
+
+    public CardData OnKilled(Action<CardData> callback)
+    {
+        onKilled += callback;
+
+        return this;
+    }
+
+    public void Kill()
+    {
+        onKilled?.Invoke(this);
     }
 
     #endregion

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -39,6 +40,7 @@ public class GameManager : MonoBehaviour
     private CardMover cardMover;
 
     private CardsDataContainer cardsDataContainer;
+    private CardDestroyer cardDestroyer;
 
     #endregion
 
@@ -48,8 +50,11 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         cardsDataContainer = new CardsDataContainer();
+        
         cardValueModificator.Setup(cardsDataContainer);
         cardMover.Setup(cardsHand, cardsDataContainer);
+        
+        cardDestroyer = new CardDestroyer(cardsDataContainer, cardsHand);
 
         SetActiveLoader(true);
         SetActiveDamageButton(false);
@@ -60,7 +65,8 @@ public class GameManager : MonoBehaviour
             SetActiveDamageButton(true);
 
             CreateCardsData();
-            InstantiateCardViews();
+            
+            cardDestroyer.AddCards(InstantiateCardViews());
         });
     }
 
@@ -104,16 +110,16 @@ public class GameManager : MonoBehaviour
         cardsDataContainer.SetCards(cardsCreator.CreateCards());
     }
 
-    private void InstantiateCardViews()
+    private List<CardView> InstantiateCardViews()
     {
         var cards = cardsDataContainer.Cards;
 
         if (cards == null)
         {
-            return;
+            return null;
         }
 
-        cardsHand.CreateCards(cards);
+        return cardsHand.CreateCards(cards);
     }
 
     private void DamageButtonClicked()
