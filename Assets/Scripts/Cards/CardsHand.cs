@@ -7,6 +7,10 @@ public class CardsHand : MonoBehaviour
 {
     #region Variables
 
+    [Header("Main Canvas Container")]
+    [SerializeField]
+    private RectTransform mainCanvasRectTransform;
+
     [Header("Prefab")]
     [SerializeField]
     private CardView cardViewPrefab;
@@ -38,9 +42,6 @@ public class CardsHand : MonoBehaviour
     [SerializeField]
     private float delayBeforeMove = 1f;
 
-    [SerializeField]
-    private float movingAnimationTime;
-
     private List<CardView> cards = new List<CardView>();
 
     #endregion
@@ -59,30 +60,7 @@ public class CardsHand : MonoBehaviour
         StartCoroutine(PlaceAndRotateAfterDelay());
     }
 
-    #endregion
-
-
-    #region Private methods
-
-    private void InstantiateCards(List<CardData> cards)
-    {
-        for (int i = 0, n = cards.Count; i < n; i++)
-        {
-            var cardView = Instantiate(cardViewPrefab, cardsParentRectTransform);
-            cardView.Setup(cards[i]);
-
-            this.cards.Add(cardView);
-        }
-    }
-
-    private IEnumerator PlaceAndRotateAfterDelay()
-    {
-        yield return new WaitForSeconds(delayBeforeMove);
-
-        PlaceAndRotate();
-    }
-
-    private void PlaceAndRotate()
+    public void PlaceAndRotate()
     {
         var leftPoint = leftLimitRectTransform.localPosition;
         var rightPoint = rightLimitRectTransform.localPosition;
@@ -97,10 +75,13 @@ public class CardsHand : MonoBehaviour
         for (int i = 0; i < count; i++)
         {
             var card = cards[i];
+            card.SetIndex(i);
+            
+            card.transform.SetSiblingIndex(i);
 
             float cardRotation = startRotation - i * itemRotationDelta;
 
-            card.transform.DORotate(new Vector3(0f, 0f, cardRotation), movingAnimationTime, RotateMode.FastBeyond360);
+            card.DoRotate(new Vector3(0f, 0f, cardRotation));
 
             float yPositionFromRotationOffset = Mathf.Abs(cardRotation) * yPositionFromRotationScalingFactor;
             float xPositionFromRotationOffset = cardRotation * xPositionFromRotationScalingFactor;
@@ -108,8 +89,44 @@ public class CardsHand : MonoBehaviour
             var position = leftPoint + new Vector3(i * gapDelta + xPositionFromRotationOffset,
                 leftPoint.y - yPositionFromRotationOffset, leftPoint.z);
 
-            card.transform.DOLocalMove(position, movingAnimationTime);
+            card.DoMove(position);
         }
+    }
+
+    public void RemoveCard(CardView cardView)
+    {
+        cardView.transform.parent = mainCanvasRectTransform;
+        cards.RemoveAt(cardView.Index);
+    }
+
+    public void AddCard(CardView cardView)
+    {
+        cardView.transform.parent = cardsParentRectTransform;
+        cards.Insert(cardView.Index, cardView);
+    }
+
+    #endregion
+
+
+    #region Private methods
+
+    private void InstantiateCards(List<CardData> cards)
+    {
+        for (int i = 0, n = cards.Count; i < n; i++)
+        {
+            var cardView = Instantiate(cardViewPrefab, cardsParentRectTransform);
+            cardView.Setup(cards[i]);
+            cardView.SetIndex(i);
+
+            this.cards.Add(cardView);
+        }
+    }
+
+    private IEnumerator PlaceAndRotateAfterDelay()
+    {
+        yield return new WaitForSeconds(delayBeforeMove);
+
+        PlaceAndRotate();
     }
 
     #endregion

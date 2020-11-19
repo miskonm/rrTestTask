@@ -1,9 +1,11 @@
-﻿using DG.Tweening;
+﻿using System;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class CardView : MonoBehaviour
+public class CardView : MonoBehaviour, IPointerDownHandler
 {
     #region Variables
 
@@ -52,14 +54,33 @@ public class CardView : MonoBehaviour
     [SerializeField]
     private float outAnimationTime;
 
+    [SerializeField]
+    private float movingAnimationTime;
+
+    [Header("Shine")]
+    [SerializeField]
+    private CanvasGroup shineCanvasGroup;
+
     private RectTransform cachedRectTransform;
+
+    private Tweener moveTweener;
+    private Tweener rotateTweener;
+
+    private bool isCardAlive = true;
+
+    #endregion
+
+
+    #region Events
+
+    public static event Action<CardView> OnButtonClicked;
 
     #endregion
 
 
     #region Properties
 
-    public float Width => cachedRectTransform.rect.width;
+    public int Index { get; private set; }
 
     #endregion
 
@@ -76,6 +97,11 @@ public class CardView : MonoBehaviour
 
     #region Public methods
 
+    public void SetPosition(Vector3 position)
+    {
+        cachedRectTransform.position = position;
+    }
+
     public void Setup(CardData cardData)
     {
         cardData.OnManaChanged(ChangeManaValue).OnHpChanged(ChangeHpValue).OnAtkChanged(ChangeAtkValue);
@@ -87,6 +113,55 @@ public class CardView : MonoBehaviour
         manaTextLabel.text = cardData.Mana.ToString();
         hpTextLabel.text = cardData.Hp.ToString();
         atkTextLabel.text = cardData.Atk.ToString();
+    }
+
+    public void SetIndex(int index)
+    {
+        Index = index;
+    }
+
+    public void TakeCard()
+    {
+        SetActiveSwitchCanvasOverrideSortingOrder(true);
+
+        moveTweener?.Kill();
+        rotateTweener?.Kill();
+
+        shineCanvasGroup.alpha = 1f;
+
+        cachedRectTransform.localRotation = Quaternion.identity;
+    }
+
+    public void DropCard()
+    {
+        shineCanvasGroup.alpha = 0f;
+
+        SetActiveSwitchCanvasOverrideSortingOrder(false);
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        if (!isCardAlive)
+        {
+            return;
+        }
+
+        OnButtonClicked?.Invoke(this);
+    }
+
+    public void DoMove(Vector3 localPosition)
+    {
+        moveTweener = cachedRectTransform.DOLocalMove(localPosition, movingAnimationTime);
+    }
+
+    public void DoRotate(Vector3 eulerAngle)
+    {
+        rotateTweener = cachedRectTransform.DORotate(eulerAngle, movingAnimationTime);
+    }
+
+    public void KillCard()
+    {
+        isCardAlive = false;
     }
 
     #endregion

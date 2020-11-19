@@ -33,6 +33,10 @@ public class GameManager : MonoBehaviour
     [Header(nameof(CardValueModificator))]
     [SerializeField]
     private CardValueModificator cardValueModificator;
+    
+    [Header(nameof(CardMover))]
+    [SerializeField]
+    private CardMover cardMover;
 
     private CardsDataContainer cardsDataContainer;
 
@@ -45,6 +49,7 @@ public class GameManager : MonoBehaviour
     {
         cardsDataContainer = new CardsDataContainer();
         cardValueModificator.Setup(cardsDataContainer);
+        cardMover.Setup(cardsHand);
 
         SetActiveLoader(true);
         SetActiveDamageButton(false);
